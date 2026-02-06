@@ -70,6 +70,22 @@ function buildMenuButtons(entries, prefix) {
   }));
 }
 
+function formatUptime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours}h ${minutes}m ${seconds}s`;
+}
+
+function formatBytes(bytes) {
+  if (!bytes && bytes !== 0) return '0 B';
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  const value = bytes / Math.pow(1024, i);
+  return `${value.toFixed(2)} ${sizes[i]}`;
+}
+
 const commandAliasConfig = loadCommandAliases();
 const commandAliases = commandAliasConfig.aliases;
 const extraCommands = new Set(commandAliasConfig.extraCommands);
@@ -1542,6 +1558,109 @@ case 'settings': {
     console.error('settings command error:', err);
     try { await socket.sendMessage(sender, { text: '❌ Failed to show settings menu.' }, { quoted: msg }); } catch(e){}
   }
+  break;
+}
+
+case 'about':
+case 'botinfo':
+case 'info':
+case 'runtime':
+case 'uptime':
+case 'status':
+case 'version':
+case 'system': {
+  const startTime = socketCreationTime.get(number) || Date.now();
+  const uptime = formatUptime(Date.now() - startTime);
+  const platform = process.env.PLATFORM || 'Hᴇʀᴏᴋᴜ';
+  const text = `*🤖 ${config.BOT_NAME || 'NovaX'}*\n\n*Owner:* ${config.OWNER_NAME || 'Anonymous'}\n*Version:* ${config.BOT_VERSION || 'latest'}\n*Platform:* ${platform}\n*Uptime:* ${uptime}`;
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'script': {
+  const text = `*📜 Script Info*\n\nName: ${config.BOT_NAME || 'NovaX'}\nVersion: ${config.BOT_VERSION || 'latest'}`;
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'creds': {
+  await socket.sendMessage(sender, { text: '✅ Credentials are stored securely for active sessions.' }, { quoted: msg });
+  break;
+}
+
+case 'memory':
+case 'ram': {
+  const mem = process.memoryUsage();
+  const text = `*🧠 Memory Usage*\n\nRSS: ${formatBytes(mem.rss)}\nHeap Total: ${formatBytes(mem.heapTotal)}\nHeap Used: ${formatBytes(mem.heapUsed)}\nExternal: ${formatBytes(mem.external)}`;
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'cpu': {
+  const cpus = os.cpus();
+  const text = `*🖥️ CPU Info*\n\nModel: ${cpus[0]?.model || 'Unknown'}\nCores: ${cpus.length}\nSpeed: ${cpus[0]?.speed || 'N/A'} MHz`;
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'platform': {
+  const text = `*🧩 Platform*\n\nNode: ${process.version}\nOS: ${os.type()} ${os.release()} (${os.platform()})`;
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'mode': {
+  await socket.sendMessage(sender, { text: `*🔧 Mode:* ${runtimeMode}` }, { quoted: msg });
+  break;
+}
+
+case 'stats':
+case 'dashboard':
+case 'logs': {
+  const text = '*📊 Stats/Dashboard/Logs*\nThis feature is not enabled yet in this build.';
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'rules':
+case 'terms':
+case 'privacy': {
+  const text = '*📄 Policy*\nPlease contact the owner for rules/terms/privacy details.';
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'report':
+case 'request':
+case 'feedback':
+case 'bug': {
+  const text = `*📝 Feedback*\nSend your request/report to the owner: wa.me/${config.OWNER_NUMBER || ''}`;
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'changelog':
+case 'lastupdate': {
+  const text = `*🧾 Changelog*\nVersion ${config.BOT_VERSION || 'latest'}.\nLast update: ${new Date().toLocaleDateString()}`;
+  await socket.sendMessage(sender, { text }, { quoted: msg });
+  break;
+}
+
+case 'network':
+case 'latency': {
+  const latency = Date.now() - (msg.messageTimestamp * 1000 || Date.now());
+  await socket.sendMessage(sender, { text: `*📡 Latency:* ${latency}ms` }, { quoted: msg });
+  break;
+}
+
+case 'reboot':
+case 'restart':
+case 'shutdown': {
+  if (!isOwner) {
+    await socket.sendMessage(sender, { text: '❌ Owner only command.' }, { quoted: msg });
+    break;
+  }
+  await socket.sendMessage(sender, { text: `⚠️ ${resolvedCommand} requested. Please restart the host process manually.` }, { quoted: msg });
   break;
 }
 
