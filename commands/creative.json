@@ -1,0 +1,8 @@
+{
+  "text": "\n  `🎨 Cʀᴇᴀᴛɪᴠᴇ ᴍᴇɴᴜ 🎨`\n\n╭─ 🤖 𝐀𝐈 𝐅𝐄𝐀𝐓𝐔𝐑𝐄𝐒\n│ ✦ {prefix}ai [message]\n│ more soon\n╰────────\n\n╭─ ✍️ 𝐓𝐄𝐗𝐓 𝐓𝐎𝐎𝐋𝐒\n│ soon\n╰────────\n\n╭─ 🖼️ 𝐈𝐌𝐀𝐆𝐄 𝐓𝐎𝐎𝐋𝐒\n│ coming soon\n╰────────\n\n╭─ 💾 𝐌𝐄𝐃𝐈𝐀 𝐒𝐀𝐕𝐄𝐑\n│ coming soon\n╰────────\n",
+  "footer": "🎨 𝘊𝘳𝘦𝘢𝘵𝘪𝘷𝘦 𝘊𝘰𝘮𝘮𝘢𝘯𝘥𝘴",
+  "buttons": [
+    {"command": "menu", "label": "📜 ᴍᴇɴᴜ"},
+    {"command": "download", "label": "📥 ᴅʟ ᴍᴇɴᴜ"}
+  ]
+}
