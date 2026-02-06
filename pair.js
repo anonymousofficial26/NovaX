@@ -29,7 +29,8 @@ const MENU_TEMPLATES_PATH = path.join(__dirname, 'commands');
 const COMMAND_ALIASES_PATH = path.join(MENU_TEMPLATES_PATH, 'aliases.json');
 
 function applyTemplate(text, data) {
-  return String(text || '').replace(/\{(\w+)\}/g, (match, key) => {
+  const source = Array.isArray(text) ? text.join('\n') : text;
+  return String(source || '').replace(/\{(\w+)\}/g, (match, key) => {
     if (Object.prototype.hasOwnProperty.call(data, key)) return data[key];
     return match;
   });
